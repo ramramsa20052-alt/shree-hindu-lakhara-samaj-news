@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Posts — Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/admin.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand"><span>🕉️</span> Admin Portal</div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html" class="menu-item">📊 Dashboard</a></li>
+            <li><a href="posts.html" class="menu-item active">📰 Manage Posts</a></li>
+            <li><a href="rajasthan.html" class="menu-item">🏙️ Rajasthan News</a></li>
+            <li><a href="society.html" class="menu-item">📜 Society News</a></li>
+            <li><a href="gallery.html" class="menu-item">📸 Gallery</a></li>
+            <li><a href="events.html" class="menu-item">📅 Events</a></li>
+            <li><a href="notices.html" class="menu-item">📢 Notices</a></li>
+            <li><a href="ticker.html" class="menu-item">⚡ Ticker Settings</a></li>
+            <li><a href="members.html" class="menu-item">👥 Members</a></li>
+            <li><a href="../../index.html" class="menu-item">🌐 View Site</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>📰 Manage News Posts</h2>
+            <div class="user-profile"><div class="avatar">AD</div><span>Administrator</span></div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h3>All Articles</h3>
+                <button class="btn btn-primary" onclick="openModal()">➕ Create Post</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Headline</th>
+                        <th>Category</th>
+                        <th>Views</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="posts-table-body">
+                    <!-- Table data loaded via script -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ADD POST MODAL -->
+    <div id="postModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Add New Article</h3>
+            <div class="form-group">
+                <label>Article Title</label>
+                <input type="text" id="postTitle" class="form-control" placeholder="Enter headline...">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="postCat" class="form-control">
+                    <option value="society">समाज समाचार</option>
+                    <option value="rajasthan">राजस्थान</option>
+                    <option value="india">भारत</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Short Excerpt</label>
+                <textarea id="postExp" class="form-control" rows="3"></textarea>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-primary" style="flex:1" onclick="savePost()">Publish</button>
+                <button class="btn" style="flex:1" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/data-manager.js"></script>
+    <script>
+        function loadPosts() {
+            const tableBody = document.getElementById('posts-table-body');
+            const posts = LakharaData.getPosts();
+            tableBody.innerHTML = posts.map(post => `
+                <tr>
+                    <td>${post.title}</td>
+                    <td><span class="badge badge-success">${post.category}</span></td>
+                    <td>${post.views}</td>
+                    <td>Active</td>
+                    <td class="action-btns">
+                        <button class="action-btn edit">✏️</button>
+                        <button class="action-btn delete">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openModal() { document.getElementById('postModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('postModal').style.display = 'none'; }
+
+        function savePost() {
+            const newPost = {
+                id: Date.now(),
+                title: document.getElementById('postTitle').value,
+                category: document.getElementById('postCat').value,
+                excerpt: document.getElementById('postExp').value,
+                views: "0",
+                author: "Admin",
+                date: new Date().toLocaleDateString()
+            };
+            LakharaData.addPost(newPost);
+            closeModal();
+            loadPosts();
+            alert("New Post Published to Website!");
+        }
+
+        loadPosts();
+    </script>
+</body>
+</html>
